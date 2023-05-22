@@ -7,33 +7,32 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
-  Product.findAll({
+  Product.findAll({//in this line of code we use 'find all' to call information from the products table.
 		include: [
-			Category,
-			{
-				model: Tag,
+			Category,//this will specify that fetching products table will also include associated information from the category table
+			{//additionally tag and product tag will be included in the fetch request
+				model: Tag, 
 				through: ProductTag,
 			},
 		],
 	})
-		.then((products) => res.json(products))
-		.catch((err) => {
-			console.log(err)
-			res.status(500).json(err)
+		.then((products) => res.json(products)) // if succesfull products response will be sent to the client as json data 
+		.catch((err) => {console.log(err) // if an error occurs a response of internal server error will be sent in the response body 
+      res.status(500).json(err)
 		})
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => {// this function will allow us to retrieve information by ID
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
   Product.findOne({
 		where: {
-			id: req.params.id,
+			id: req.params.id,//this line of code will allow us to retrieve information that matches the value of ID re.params.id
 		},
 		include: [
-			Category,
-			{
+			Category,//this will specify that fetching products table will also include associated information from the category table
+			{//additionally tag and product tag will be included in the fetch request
 				model: Tag,
 				through: ProductTag,
 			},
@@ -124,20 +123,22 @@ router.put('/:id', (req, res) => {
 });
 
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', (req, res) => {//the following section of code will allow us to delete any information by 
+	//using the ID
     // delete one product by its `id` value
     Product.destroy({
       where: {
-        id: req.params.id,
+        id: req.params.id,//this line of code will allow us to delete information that matches the value of ID re.params.id
       },
     })
-      .then((products) => {
+      .then((products) => {//If the deletion is successful, the code will log the number of deleted products to the console.
         console.log(products)
-        res.json(products)
+        res.json(products)//this line will send a JSON response with the deleted products information
       })
+
       .catch((err) => {
-        console.log(err)
-        res.status(400).json(err)
+        console.log(err)//this line will log the error to the console
+        res.status(400).json(err)// will respong with a status code of 400 bad request
       })
   });
 
